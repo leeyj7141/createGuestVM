@@ -212,7 +212,7 @@
       #    - { num: 3, device: vdd }
 
       - name: ceph storage attach 
-        shell: "virsh attach-disk {{ inventory_hostname }} {{ image_file_path }}/{{ inventory_hostname }}_{{ item.num }}.qcow2 {{ item.device }} --live  --driver qemu --subdriver qcow2 --targetbus virtio"
+        shell: "virsh attach-disk {{ inventory_hostname }} {{ image_file_path }}/{{ inventory_hostname }}_{{ item.num }}.qcow2 {{ item.device }} --live  --driver qemu --subdriver qcow2 --targetbus virtio --persistent"
         args:
           executable: /bin/bash 
         with_items:
@@ -225,7 +225,7 @@
   hosts: node
   gather_facts: no
   tasks: 
-    - name: network restart prepair
+    - name: network restart prepare
       shell: "ps -fu nobody |grep -w {{ network_name }} |awk '{print $2}'"
       register: output1
         
