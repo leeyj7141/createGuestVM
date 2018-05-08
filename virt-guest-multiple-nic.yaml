@@ -43,11 +43,11 @@
       - name: virsh net create 
         template:
           src: templates/network.j2
-          dest: /youngju1/cloud-init/createGuestVM/bridge.xml
+          dest: "{{ PWD }}/bridge.xml"
         when: bridge_exist_check.failed 
           
       - name: network create 
-        shell: virsh net-define /youngju1/cloud-init/createGuestVM/bridge.xml
+        shell: virsh net-define "{{ PWD }}/bridge.xml"
         when: bridge_exist_check.failed
 
       - name: network auto start
