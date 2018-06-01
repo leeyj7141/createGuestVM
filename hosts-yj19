@@ -1,0 +1,46 @@
+#[node]
+#192.168.0.105  ansible_ssh_user=root ansible_ssh_pass=#hffkEhEho@@
+#
+#[all:vars]
+#ansible_connection=ssh
+#ansible_ssh_user=root
+#ansible_ssh_pass=#hffkEhEho@@
+
+[node]
+192.168.92.1 
+
+[deploy]
+yj20-deploy cpu=4 mem=12288 network_ipaddr="10.20.1.3"  
+
+[openstack]
+yj20-con1  cpu=4 mem=12288 network_ipaddr="10.20.1.11" 
+yj20-con2  cpu=4 mem=12288 network_ipaddr="10.20.1.12" 
+yj20-con3  cpu=4 mem=12288 network_ipaddr="10.20.1.13" 
+yj20-com1  cpu=4 mem=6000  network_ipaddr="10.20.1.21" 
+yj20-com2  cpu=4 mem=6000  network_ipaddr="10.20.1.22" 
+yj20-com3  cpu=4 mem=6000  network_ipaddr="10.20.1.23" 
+yj20-com4  cpu=4 mem=6000  network_ipaddr="10.20.1.24" 
+yj20-com5  cpu=4 mem=6000  network_ipaddr="10.20.1.25" 
+yj20-com6  cpu=4 mem=6000  network_ipaddr="10.20.1.26" 
+yj20-com7  cpu=4 mem=6000  network_ipaddr="10.20.1.27" 
+
+[ceph]
+yj20-ceph1  cpu=4 mem=4096  network_ipaddr="10.20.1.31" 
+yj20-ceph2  cpu=4 mem=4096  network_ipaddr="10.20.1.32" 
+yj20-ceph3  cpu=4 mem=4096  network_ipaddr="10.20.1.33" 
+yj20-ceph4  cpu=4 mem=4096  network_ipaddr="10.20.1.34" 
+yj20-ceph5  cpu=4 mem=4096  network_ipaddr="10.20.1.35" 
+yj20-ceph6  cpu=4 mem=4096  network_ipaddr="10.20.1.36" 
+
+[vms:children]
+ceph
+openstack
+deploy
+
+[all:vars]
+ansible_host="192.168.92.1" 
+network_name="yj20"
+dns1="10.20.1.1"
+network_gateway="10.20.1.1"
+cloud_image="CentOS-7-x86_64-GenericCloud-1611.qcow2"
+#cloud_image="rhel-guest-image-7.3-36.x86_64.qcow2"

@@ -1,14 +1,14 @@
 <network>
-  <name>ocp2</name>
-  <uuid>4a7e47b9-d06e-5e69-bd17-ce265a35a1a2</uuid>
+  <name>yj20</name>
+  <uuid>7152c6fb-7cef-50a5-96d0-62f097ba8736</uuid>
   <forward mode='nat'>
     <nat>
       <port start='1024' end='65535'/>
     </nat>
   </forward>
-  <bridge name='virbr27' stp='on' delay='0'/>
-  <mac address='52:54:c5:e1:4c:d0'/>
-  <ip address='10.14.1.1' netmask='255.255.255.0'>
+  <bridge name='virbr34' stp='on' delay='0'/>
+  <mac address='52:54:c4:d6:35:26'/>
+  <ip address='10.20.1.1' netmask='255.255.255.0'>
   </ip>
 </network>
 

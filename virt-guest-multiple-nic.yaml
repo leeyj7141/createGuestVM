@@ -13,10 +13,6 @@
         service: name=libvirtd state=started enabled=yes
         register: libvirtd
 
-#      - name: wait for libvirtd to get up
-#        pause: seconds=30
-#        when: libvirtd.changed
-
       - name: directory create
         file: 
           path: "{{ image_file_path }}/cloud-init/"
@@ -66,10 +62,12 @@
       - vars/default.yml
       - vars/guest.yml
   tasks:
-
       - name: get list of vms
-        virt: command=list_vms
+        local_action:
+          module: virt 
+          command: list_vms
         register: virt_vms
+        run_once: true
 
       - name: create user-date directory 
         file: 
@@ -102,10 +100,6 @@
           owner: qemu
           group: qemu 
 
-     # - name: resize image
-     #   shell: qemu-img resize {{ image_file_path }}/{{ inventory_hostname }}.qcow2 +{{ disk_size }}G
-     #   when: disk_size
-
       - name: create vm
         command: virt-install --import 
                  --name {{ inventory_hostname }}
@@ -127,16 +121,17 @@
                  --virt-type {{ virt_type }}
                  --noautoconsole
         when: inventory_hostname not in virt_vms.list_vms
-        with_items: guests
 
       - name: get guest info
-        virt: command=info
+        local_action:
+          module: virt 
+          command: info
         register: virt_info
+        run_once: true
 
       - name: make sure all vms are running
         virt: name={{ inventory_hostname }} command=start
         when: virt_info[inventory_hostname]['state'] != 'running'
-        with_items: guests
 
 - name: add hosts playbook 
   user: root
@@ -225,9 +220,6 @@
   hosts: node
   gather_facts: no
   tasks: 
-    - name: network restart prepare
-      shell: "ps -fu nobody |grep -w {{ network_name }} |awk '{print $2}'"
-      register: output1
         
     - name: network restart 
       shell: "pkill -1 dnsmasq"

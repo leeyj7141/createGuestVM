@@ -1,0 +1,34 @@
+#[node]
+#192.168.0.105  ansible_ssh_user=root ansible_ssh_pass=#hffkEhEho@@
+#
+#[all:vars]
+#ansible_connection=ssh
+#ansible_ssh_user=root
+#ansible_ssh_pass=#hffkEhEho@@
+
+[node]
+192.168.92.1 
+
+[openstack]
+test-con1  cpu=4 mem=12288 network_ipaddr="10.15.1.11" 
+test-con2  cpu=4 mem=12288 network_ipaddr="10.15.1.12" 
+test-con3  cpu=4 mem=12288 network_ipaddr="10.15.1.13" 
+test-com1  cpu=4 mem=6000  network_ipaddr="10.15.1.21" 
+test-com2  cpu=4 mem=6000  network_ipaddr="10.15.1.22" 
+
+[ceph]
+test-ceph1  cpu=4 mem=4096  network_ipaddr="10.15.1.31" 
+test-ceph2  cpu=4 mem=4096  network_ipaddr="10.15.1.32" 
+test-ceph3  cpu=4 mem=4096  network_ipaddr="10.15.1.33" 
+
+[vms:children]
+ceph
+openstack
+
+[all:vars]
+ansible_host="192.168.92.1" 
+network_name="yj15-test"
+dns1="10.15.1.1"
+network_gateway="10.15.1.1"
+cloud_image="CentOS-7-x86_64-GenericCloud-1611.qcow2"
+#cloud_image="rhel-guest-image-7.3-36.x86_64.qcow2"
