@@ -1,10 +1,10 @@
 #[node]
-#192.168.0.105  ansible_ssh_user=root ansible_ssh_pass=#hffkEhEho@@
+#192.168.0.105  ansible_ssh_user=root ansible_ssh_pass=
 #
 #[all:vars]
 #ansible_connection=ssh
 #ansible_ssh_user=root
-#ansible_ssh_pass=#hffkEhEho@@
+#ansible_ssh_pass=
 
 [node]
 192.168.92.1 
