@@ -27,7 +27,8 @@
         ignore_errors: yes
 
       - name: bridge name define 
-        shell: "N=`ip link  |awk -F: '{print $2}' |grep -iv 'nic'|grep -i virbr | sort -V |tail -n1 |cut -c 7-` ; ((N++)) ; echo $N"
+        #shell: "N=`ip link  |awk -F: '{print $2}' |grep -iv 'nic'|grep -i virbr | sort -V |tail -n1 |cut -c 7-` ; ((N++)) ; echo $N"
+        shell: "echo -{{ network_name }}"
         register: bridge_number
         when: bridge_exist_check.failed 
 
@@ -89,7 +90,8 @@
         register: image_exist
 
       - name: backing image create 
-        shell: qemu-img create -b {{ image_file_path }}/{{ cloud_image }} {{ image_file_path }}/{{ inventory_hostname }}.qcow2 -f qcow2 {{ disk_size }}G
+        shell: qemu-img create -b /youngju1/vms/{{ cloud_image }} {{ image_file_path }}/{{ inventory_hostname }}.qcow2 -f qcow2 {{ disk_size }}G
+        #shell: qemu-img create -b {{ image_file_path }}/{{ cloud_image }} {{ image_file_path }}/{{ inventory_hostname }}.qcow2 -f qcow2 {{ disk_size }}G
         when:
           - disk_size 
           - not image_exist.stat.exists
@@ -101,25 +103,28 @@
           group: qemu 
 
       - name: create vm
-        command: virt-install --import 
-                 --name {{ inventory_hostname }}
-                 --ram  {{ mem }}
-                 --vcpus {{ cpu }}
-                 --os-type {{ os.type }}
-                 --os-variant {{ os.variant }}
-                 --cpu host-passthrough
-                 --disk {{ image_file_path }}/{{ inventory_hostname }}.qcow2,format=qcow2,bus=virtio
-                 --disk {{ image_file_path }}/{{ inventory_hostname }}-{{ disk.cloud_init }},device=cdrom
-                 --network network={{ network_name }},model=virtio
-                 --network network={{ network_name }},model=virtio
-                 --network network={{ network_name }},model=virtio
-                 --network network={{ network_name }},model=virtio
-                 --network network={{ network_name }},model=virtio
-                 --network bridge=br0,model=virtio
-                 --graphics vnc
-                 --{{virt_hypervisor}}
-                 --virt-type {{ virt_type }}
-                 --noautoconsole
+        local_action: 
+          module: command
+            virt-install --import 
+            --name {{ inventory_hostname }}
+            --ram  {{ mem }}
+            --vcpus {{ cpu }}
+            --os-type {{ os.type }}
+            --os-variant {{ os.variant }}
+            --cpu host-passthrough
+            --disk {{ image_file_path }}/{{ inventory_hostname }}.qcow2,format=qcow2,bus=virtio
+            --disk {{ image_file_path }}/{{ inventory_hostname }}-{{ disk.cloud_init }},device=cdrom
+            --network network={{ network_name }},model=virtio
+            --network network={{ network_name }},model=virtio
+            --network network={{ network_name }},model=virtio
+            --network network={{ network_name }},model=virtio
+            --network network={{ network_name }},model=virtio
+            --network bridge=br0,model=virtio
+            --network bridge=br0,model=virtio
+            --graphics vnc
+            --{{virt_hypervisor}}
+            --virt-type {{ virt_type }}
+            --noautoconsole
         when: inventory_hostname not in virt_vms.list_vms
 
       - name: get guest info
