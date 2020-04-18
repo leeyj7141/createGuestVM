@@ -90,8 +90,8 @@
         register: image_exist
 
       - name: backing image create 
-        shell: qemu-img create -b /youngju1/vms/{{ cloud_image }} {{ image_file_path }}/{{ inventory_hostname }}.qcow2 -f qcow2 {{ disk_size }}G
-        #shell: qemu-img create -b {{ image_file_path }}/{{ cloud_image }} {{ image_file_path }}/{{ inventory_hostname }}.qcow2 -f qcow2 {{ disk_size }}G
+        #shell: qemu-img create -b /youngju1/vms/{{ cloud_image }} {{ image_file_path }}/{{ inventory_hostname }}.qcow2 -f qcow2 {{ disk_size }}G
+        shell: qemu-img create -b {{ image_file_path }}/{{ cloud_image }} {{ image_file_path }}/{{ inventory_hostname }}.qcow2 -f qcow2 {{ disk_size }}G
         when:
           - disk_size 
           - not image_exist.stat.exists
@@ -119,8 +119,8 @@
             --network network={{ network_name }},model=virtio
             --network network={{ network_name }},model=virtio
             --network network={{ network_name }},model=virtio
-            --network bridge=br0,model=virtio
-            --network bridge=br0,model=virtio
+            --network network={{ ext_net_name }},model=virtio
+            --network network={{ ext_net_name }},model=virtio
             --graphics vnc
             --{{virt_hypervisor}}
             --virt-type {{ virt_type }}
