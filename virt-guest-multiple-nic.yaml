@@ -33,18 +33,21 @@
         when: bridge_exist_check.failed 
 
       - name: create mac address 
-        shell: " printf '52:54:%02x:%02x:%02x:%02x\n' $[RANDOM%256]  $[RANDOM%256]  $[RANDOM%256] $[RANDOM%256]"
+        #command: "printf '52:54:%02x:%02x:%02x:%02x\n' $[RANDOM%256]  $[RANDOM%256]  $[RANDOM%256] $[RANDOM%256]"
+        shell: 'printf "52:54:%02x:%02x:%02x:%02x\n" $[RANDOM%256]  $[RANDOM%256]  $[RANDOM%256] $[RANDOM%256]'
+        args:
+         executable: /bin/bash
         register: mac_address1
         when: bridge_exist_check.failed
 
       - name: virsh net create 
         template:
           src: templates/network.j2
-          dest: "{{ PWD }}/bridge.xml"
+          dest: "{{ image_file_path }}/bridge.xml"
         when: bridge_exist_check.failed 
           
       - name: network create 
-        shell: virsh net-define "{{ PWD }}/bridge.xml"
+        shell: virsh net-define "{{ image_file_path }}/bridge.xml"
         when: bridge_exist_check.failed
 
       - name: network auto start
@@ -99,8 +102,9 @@
       - name: change permission 
         file: 
           path: "{{ image_file_path }}/{{ inventory_hostname }}.qcow2"
-          owner: qemu
-          group: qemu 
+          mode: 0756
+          #owner: qemu
+          #group: qemu 
 
       - name: create vm
         local_action: 

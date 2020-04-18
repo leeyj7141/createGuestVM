@@ -37,3 +37,5 @@ cloud_image="CentOS-7-x86_64-GenericCloud-1611_no_root_passwd.qcow2"
 ext_net_name="ext-net"
 image_file_path="/home/data/vms/"
 #cloud_image="rhel-guest-image-7.3-36.x86_64.qcow2"
+ansible_python_interpreter=/usr/bin/python3  
+disk_size=10
