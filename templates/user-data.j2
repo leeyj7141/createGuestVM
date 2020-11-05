@@ -44,7 +44,7 @@ runcmd:
   - 'systemctl disable cloud-final.service'
   - 'systemctl disable cloud-init-local.service'
   - 'systemctl disable cloud-init.service'
-  - 'yum install bash-completion vim *bin/netstat *bin/route -y'
+  - 'yum install bash-completion vim net-tools -y'
 
 # Configure where output will go
 output: 

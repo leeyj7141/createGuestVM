@@ -33,7 +33,9 @@
         when: bridge_exist_check.failed 
 
       - name: create mac address 
-        shell: " printf '52:54:%02x:%02x:%02x:%02x\n' $[RANDOM%256]  $[RANDOM%256]  $[RANDOM%256] $[RANDOM%256]"
+        shell: "printf '52:54:%02x:%02x:%02x:%02x\n' $[RANDOM%256]  $[RANDOM%256]  $[RANDOM%256] $[RANDOM%256]"
+        args:
+            executable: /bin/bash
         register: mac_address1
         when: bridge_exist_check.failed
 
@@ -90,8 +92,9 @@
         register: image_exist
 
       - name: backing image create 
-        shell: qemu-img create -b /youngju1/vms/{{ cloud_image }} {{ image_file_path }}/{{ inventory_hostname }}.qcow2 -f qcow2 {{ disk_size }}G
-        #shell: qemu-img create -b {{ image_file_path }}/{{ cloud_image }} {{ image_file_path }}/{{ inventory_hostname }}.qcow2 -f qcow2 {{ disk_size }}G
+        shell: qemu-img create -b {{ image_file_path }}/{{ cloud_image }} {{ image_file_path }}/{{ inventory_hostname }}.qcow2 -f qcow2 -F qcow2 {{ disk_size }}G
+        args:
+            executable: /bin/bash
         when:
           - disk_size 
           - not image_exist.stat.exists
@@ -99,9 +102,20 @@
       - name: change permission 
         file: 
           path: "{{ image_file_path }}/{{ inventory_hostname }}.qcow2"
-          owner: qemu
-          group: qemu 
+          owner: libvirt-qemu
+          group: kvm
+          #owner: qemu
+          #group: qemu 
 
+- name: Create libvirt guests
+  user: root
+  hosts: vms
+  serial: 1
+  gather_facts: no
+  vars_files:
+      - vars/default.yml
+      - vars/guest.yml
+  tasks:
       - name: create vm
         local_action: 
           module: command
@@ -119,14 +133,24 @@
             --network network={{ network_name }},model=virtio
             --network network={{ network_name }},model=virtio
             --network network={{ network_name }},model=virtio
-            --network bridge=br0,model=virtio
-            --network bridge=br0,model=virtio
+            --network network=node-net,model=virtio
+            --network network=node-net,model=virtio
             --graphics vnc
             --{{virt_hypervisor}}
             --virt-type {{ virt_type }}
             --noautoconsole
         when: inventory_hostname not in virt_vms.list_vms
 
+            #--network bridge=br0,model=virtio
+
+- name: Verify VMs
+  user: root
+  hosts: vms
+  gather_facts: no
+  vars_files:
+      - vars/default.yml
+      - vars/guest.yml
+  tasks:
       - name: get guest info
         local_action:
           module: virt 
@@ -224,10 +248,10 @@
 - name: post tasks
   hosts: node
   gather_facts: no
+  become: yes
   tasks: 
         
     - name: network restart 
       shell: "pkill -1 dnsmasq"
       args:
         executable: /bin/bash 
-

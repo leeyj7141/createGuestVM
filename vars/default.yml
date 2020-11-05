@@ -1,6 +1,6 @@
 ---
 # KVM Hypervisor info
-host: 192.168.92.1
+host: 127.0.0.1
 virt_type: kvm
 virt_hypervisor: hvm
 
@@ -10,7 +10,8 @@ network:
     interface: eth0
     netmask: 255.255.255.0
 
-PWD: /youngju1/cloud-init/createGuestVM
+#PWD: /youngju1/cloud-init/createGuestVM
+PWD: /data/createGuestVM
 
 # for default user(centos for CentOS, cloud-user for RHEL)
 userpassword: root123
@@ -18,7 +19,7 @@ rootpassword: root123
 
 os:
     type: linux
-    variant: rhel7
+    variant: rhel7.0
 
 disk:
     cloud_init: cloud-init.iso
