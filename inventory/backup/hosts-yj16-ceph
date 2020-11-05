@@ -1,0 +1,35 @@
+#[node]
+#192.168.0.105  ansible_ssh_user=root ansible_ssh_pass=
+#
+#[all:vars]
+#ansible_connection=ssh
+#ansible_ssh_user=root
+#ansible_ssh_pass=
+
+[node]
+192.168.92.1 
+
+[deploy]
+
+[openstack]
+
+[ceph]
+yj16-ceph1  cpu=2 mem=8192  network_ipaddr="10.16.1.31" 
+yj16-ceph2  cpu=2 mem=8192  network_ipaddr="10.16.1.32" 
+yj16-ceph3  cpu=2 mem=8192  network_ipaddr="10.16.1.33" 
+yj16-ceph4  cpu=2 mem=8192  network_ipaddr="10.16.1.34" 
+yj16-ceph5  cpu=2 mem=8192  network_ipaddr="10.16.1.35" 
+yj16-ceph6  cpu=2 mem=8192  network_ipaddr="10.16.1.36" 
+
+[vms:children]
+ceph
+openstack
+deploy
+
+[all:vars]
+ansible_host="192.168.92.1" 
+network_name="yj16"
+dns1="10.16.1.1"
+network_gateway="10.16.1.1"
+cloud_image="CentOS-7-x86_64-GenericCloud-1611.qcow2"
+#cloud_image="rhel-guest-image-7.3-36.x86_64.qcow2"

@@ -1,0 +1,30 @@
+#[node]
+#192.168.0.105  ansible_ssh_user=root ansible_ssh_pass=
+#
+#[all:vars]
+#ansible_connection=ssh
+#ansible_ssh_user=root
+#ansible_ssh_pass=
+
+[node]
+192.168.92.1 
+
+[deploy]
+yj15-monitoring cpu=4 mem=16384 network_ipaddr="10.15.1.4"  
+
+[openstack]
+
+[ceph]
+
+[vms:children]
+ceph
+openstack
+deploy
+
+[all:vars]
+ansible_host="192.168.92.1" 
+network_name="yj15"
+dns1="10.15.1.1"
+network_gateway="10.15.1.1"
+cloud_image="CentOS-7-x86_64-GenericCloud-1611.qcow2"
+#cloud_image="rhel-guest-image-7.3-36.x86_64.qcow2"
