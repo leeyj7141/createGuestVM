@@ -1,0 +1,45 @@
+#[node]
+#192.168.0.105  ansible_ssh_user=root ansible_ssh_pass=
+#
+#[all:vars]
+#ansible_connection=ssh
+#ansible_ssh_user=root
+#ansible_ssh_pass=
+
+[node]
+127.0.0.1
+
+[deploy]
+yj2-ussuri-deploy cpu=4 mem=8000 network_ipaddr="10.2.0.3" 
+
+[openstack]
+yj2-ussuri-con1 cpu=4 mem=15000 network_ipaddr="10.2.0.11" 
+yj2-ussuri-con2 cpu=4 mem=15000 network_ipaddr="10.2.0.12" 
+yj2-ussuri-con3 cpu=4 mem=15000 network_ipaddr="10.2.0.13" 
+yj2-ussuri-com1 cpu=2 mem=6000 network_ipaddr="10.2.0.21" 
+yj2-ussuri-com2 cpu=2 mem=6000 network_ipaddr="10.2.0.22" 
+
+[ceph]
+yj2-ussuri-ceph1 cpu=2 mem=6000 network_ipaddr="10.2.0.31" 
+yj2-ussuri-ceph2 cpu=2 mem=6000 network_ipaddr="10.2.0.32" 
+yj2-ussuri-ceph3 cpu=2 mem=6000 network_ipaddr="10.2.0.33" 
+
+[vms:children]
+ceph
+openstack
+deploy
+
+[all:vars]
+ansible_host="127.0.0.1"
+network_name="yj2"
+dns1="10.2.0.1"
+network_gateway="10.2.0.1"
+#cloud_image="CentOS-7-x86_64-GenericCloud-1611.qcow2"
+#cloud_image="rhel-guest-image-7.3-36.x86_64.qcow2"
+#cloud_image="CentOS-8-GenericCloud-8.3.2011-20201204.2.x86_64.qcow2"
+cloud_image="bionic-server-cloudimg-amd64.img"
+image_file_path='/data/vms'
+disk_size="30"
+#ansible_become=true
+base_os=ubuntu
+#base_os=centos
