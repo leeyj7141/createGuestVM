@@ -17,21 +17,57 @@ preserve_hostname: False
 hostname: {{inventory_hostname}}
 fqdn: {{inventory_hostname}}
 
+write_files: 
+{% if base_os == 'ubuntu' %}
+ - path: /etc/netplan/60-my-static-ip.yaml
+   permissions: '0644'
+   owner: root:root
+   content: |
+    #user-data:
+    network:
+     version: 2
+     ethernets:
+      ens3:
+       addresses: [{{ network_ipaddr}}/24]
+       gateway4: {{ network_gateway }}
+       nameservers:
+         addresses: [{{ dns1 }}]
+       dhcp4: no
+       set-name: ens3
+ 
+{% elif base_os == 'centos' %}
+ - path: /etc/sysconfig/network-scripts/ifcfg-eth0
+   permissions: '0644'
+   owner: root:root
+   content: |
+     BOOTPROTO=static
+     DEVICE=eth0
+     ONBOOT=yes
+     STARTMODE=auto
+     TYPE=Ethernet
+     USERCTL=no
+     #user-data:
+     IPADDR={{ network_ipaddr }}
+     NETMASK=255.255.255.0
+     GATEWAY={{ network_gateway }}
+     DNS1={{ dns1 }}
+     ONBOOT="yes"
+     NM_CONTROLLED="yes"
+{% else %}
+{% endif %}
+
 bootcmd:
-  - set -x; echo '#user-data/bootcmd:' >> /etc/sysconfig/network-scripts/ifcfg-eth0
-  - set -x; sed -i -e '/^BOOTPROTO/ s/dhcp/static/g' -e '/PERSISTENT_DHCLIENT/d' /etc/sysconfig/network-scripts/ifcfg-eth0
-  - set -x; echo 'IPADDR={{network_ipaddr}}' >> /etc/sysconfig/network-scripts/ifcfg-eth0
-  - set -x; echo 'NETMASK={{network.netmask}}' >> /etc/sysconfig/network-scripts/ifcfg-eth0
-  - set -x; echo 'GATEWAY={{network_gateway}}' >> /etc/sysconfig/network-scripts/ifcfg-eth0
-  - set -x; echo 'DNS1={{dns1}}' >> /etc/sysconfig/network-scripts/ifcfg-eth0
-  - set -x; echo 'ONBOOT="yes"' >> /etc/sysconfig/network-scripts/ifcfg-eth0
-  - set -x; echo 'NM_CONTROLLED=no' >> /etc/sysconfig/network-scripts/ifcfg-eth0
-  - ifdown eth0
-  - ifup eth0
 
 # Run command when finished with it
 runcmd:
-  - 'systemctl disable NetworkManager'
+#  - 'systemctl disable NetworkManager'
+{% if base_os == 'ubuntu' %}
+  - netplan apply 
+{% elif base_os == 'centos' %}
+  - ifdown eth0  
+  - ifup eth0  
+{% else %}
+{% endif %}
   - 'timedatectl set-timezone Asia/Seoul'
   - 'sed -i "/server .* iburst/d" /etc/chrony.conf'
   - 'sed -i "/^# Please consider.*$/a\server time.bora.net iburst" /etc/chrony.conf'
@@ -39,12 +75,12 @@ runcmd:
   - 'sed -i "s/^PASS_MAX_DAYS.*$/PASS_MAX_DAYS   90/" /etc/login.defs'
   - 'sed -i "s/^PASS_MIN_LEN.*$/PASS_MIN_LEN    9/" /etc/login.defs'
   - 'touch /etc/cloud/cloud-init.disabled'
-  - 'set -x; echo "	IdentityFile /etc/ssh/ssh_host_rsa_key" >> /etc/ssh/ssh_config'
+  - 'set -x; echo "IdentityFile /etc/ssh/ssh_host_rsa_key" >> /etc/ssh/ssh_config'
   - 'systemctl disable cloud-config.service'
   - 'systemctl disable cloud-final.service'
   - 'systemctl disable cloud-init-local.service'
   - 'systemctl disable cloud-init.service'
-  - 'yum install bash-completion vim net-tools -y'
+  - if [ -f "/etc/centos-release" ] ; then yum install bash-completion vim net-tools -y ; else apt update -y ; apt  install vim  -y ; fi 
 
 # Configure where output will go
 output: 

@@ -102,7 +102,7 @@
       - name: change permission 
         file: 
           path: "{{ image_file_path }}/{{ inventory_hostname }}.qcow2"
-          owner: libvirt-qemu
+          owner: qemu
           group: kvm
           #owner: qemu
           #group: qemu 
@@ -140,8 +140,8 @@
             --virt-type {{ virt_type }}
             --noautoconsole
         when: inventory_hostname not in virt_vms.list_vms
-
             #--network bridge=br0,model=virtio
+
 
 - name: Verify VMs
   user: root

@@ -1,14 +1,14 @@
 <network>
-  <name>yj1</name>
-  <uuid>00bec2ff-f314-521e-894d-578fd5ede3ae</uuid>
+  <name>yj3</name>
+  <uuid>b686727f-a370-5923-8e29-aad5290d90ce</uuid>
   <forward mode='nat'>
     <nat>
       <port start='1024' end='65535'/>
     </nat>
   </forward>
-  <bridge name='virbr-yj1' stp='on' delay='0'/>
-  <mac address='52:54:b2:65:7a:01'/>
-  <ip address='10.1.1.1' netmask='255.255.255.0'>
+  <bridge name='virbr-yj3' stp='on' delay='0'/>
+  <mac address='52:54:88:4f:a7:f8'/>
+  <ip address='10.3.0.1' netmask='255.255.255.0'>
   </ip>
 </network>
 
