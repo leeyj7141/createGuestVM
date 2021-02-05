@@ -89,6 +89,9 @@
       - name: Check image  exists
         stat:
           path: "{{ image_file_path }}/{{ inventory_hostname }}.qcow2"
+          get_checksum: no 
+          get_mime: no 
+          get_md5: no 
         register: image_exist
 
       - name: backing image create 
@@ -189,14 +192,23 @@
       - name: Check image  exists
         stat:
           path: "{{ image_file_path }}/{{ inventory_hostname }}_1.qcow2"
+          get_checksum: no 
+          get_mime: no 
+          get_md5: no 
         register: image_exist1
 
       - stat:
           path: "{{ image_file_path }}/{{ inventory_hostname }}_2.qcow2"
+          get_checksum: no 
+          get_mime: no 
+          get_md5: no 
         register: image_exist2
 
       - stat:
           path: "{{ image_file_path }}/{{ inventory_hostname }}_3.qcow2"
+          get_checksum: no 
+          get_mime: no 
+          get_md5: no 
         register: image_exist3
 
       - name: storage disk image create 

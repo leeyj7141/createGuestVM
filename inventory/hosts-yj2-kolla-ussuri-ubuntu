@@ -18,6 +18,9 @@ yj2-ussuri-con2 cpu=4 mem=15000 network_ipaddr="10.2.0.12"
 yj2-ussuri-con3 cpu=4 mem=15000 network_ipaddr="10.2.0.13" 
 yj2-ussuri-com1 cpu=2 mem=6000 network_ipaddr="10.2.0.21" 
 yj2-ussuri-com2 cpu=2 mem=6000 network_ipaddr="10.2.0.22" 
+yj2-ussuri-ironic1 cpu=2 mem=3000 network_ipaddr="10.2.0.23" 
+yj2-ussuri-ironic2 cpu=2 mem=3000 network_ipaddr="10.2.0.24" 
+yj2-ussuri-ironic3 cpu=2 mem=3000 network_ipaddr="10.2.0.25" 
 
 [ceph]
 yj2-ussuri-ceph1 cpu=2 mem=6000 network_ipaddr="10.2.0.31" 
